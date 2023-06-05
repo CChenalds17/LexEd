@@ -1,4 +1,4 @@
-# LexEd <img style="float: right;" src="resources/logo.png">
+# LexEd <img style="float: right;" src="resources/logo_inverted.png">
 LexEd is a tool designed to help non-native English speakers elevate their professional English. LexEd corrects, explains, and creates practice problems on your common errors — all in one app.
 
 ## Why LexEd?
