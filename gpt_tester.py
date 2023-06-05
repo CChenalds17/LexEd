@@ -196,11 +196,9 @@ async def check(text: str, window=None, key='-ERR_MSG-') -> tuple[list[str], lis
     (no_errors, err_instr) = await is_correct(text, window=window, key=key)
     # If there's an exception, just return empty lists & err_instr
     if err_instr != '':
-        print(err_instr)
         return (errors, corrected, err_instr)
     # If there are no grammatical errors, return empty lists & empty err_instr
     if no_errors:
-        print(errors)
         return (errors, corrected, err_instr)
     
     check_init_prompt = "You are a helpful AI assistant."
@@ -208,12 +206,10 @@ async def check(text: str, window=None, key='-ERR_MSG-') -> tuple[list[str], lis
     # If there are grammatical errors, call ChatGPT to find them
     (out_msg_1, err_instr) = await call_openai('gpt-3.5-turbo', check_init_prompt, check_prompt_1, window=window, key=key)
     if err_instr != '':
-        print(err_instr)
         return (errors, corrected, err_instr)
     check_prompt_2 = f"Correct each sentence, separating each with the '|' character. If there is only one, just return the corrected sentence.\n\n\"{out_msg_1}\""
     (out_msg2, err_instr) = await call_openai('gpt-3.5-turbo', check_init_prompt, check_prompt_2, window=window, key=key)
     if err_instr != '':
-        print(err_instr)
         return (errors, corrected, err_instr)
     
     e = out_msg_1.strip().strip('"').split('|')
@@ -226,8 +222,5 @@ async def check(text: str, window=None, key='-ERR_MSG-') -> tuple[list[str], lis
         if errors[i] == corrected[i]:
             del errors[i]
             del corrected[i]
-
-    print(errors)
-    print(corrected)
 
     return (errors, corrected, err_instr)
