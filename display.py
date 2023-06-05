@@ -57,7 +57,7 @@ async def build_intro(change_api_key=False) -> bool:
         [sg.Button('Submit', disabled=True), sg.Push(), sg.Text(init_err_msg, size=(40, None), text_color='dark orange', key='-ERR_MSG-'), sg.Push(), sg.Exit()]
     ]
     
-    window = sg.Window(title='Smart English Learner', layout=intro_layout, font=default_font, resizable=False, finalize=True)
+    window = sg.Window(title='LexEd', layout=intro_layout, font=default_font, resizable=False, finalize=True)
 
     # Main loop
     while True:
@@ -599,7 +599,7 @@ async def build_SmartTutor():
         [sg.Button('Check'), sg.VSeparator(), sg.Button('Practice', disabled=True), sg.Push(), sg.Text('', size=(70, 1), text_color='dark orange', key='-ERR_MSG-'), sg.Push(), sg.Exit()]
     ]
 
-    window = sg.Window(title='Smart English Learner', layout=main_layout, font=default_font, resizable=False)
+    window = sg.Window(title='LexEd', layout=main_layout, font=default_font, resizable=False)
 
     # List of errors[] and corrected[]
     errors, corrected = [], []

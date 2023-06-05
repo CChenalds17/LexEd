@@ -1,9 +1,5 @@
 # LexEd <img style="float: right;" src="resources/icon.ico">
-LexEd is a tool designed to help non-native English speakers elevate their professional English.
-- Error correction
-- Simple & comprehensive explanations
-- Practice & improve on the mistakes you made
-- Generates new sentences based on your grammatical errors
+LexEd is a tool designed to help non-native English speakers elevate their professional English. LexEd corrects, explains, and creates practice problems on your common error — all in one app.
 
 ## Why LexEd?
 - **More** than just a spell-checker
@@ -54,4 +50,4 @@ Per session:
 ## Planned Improvements
 - Add multilingual support
 - Make user profiles
-- Taylor algorithm to also check for flow
+- Update algorithm to check for flow
