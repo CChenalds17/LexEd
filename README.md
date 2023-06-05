@@ -1,4 +1,4 @@
-# ![Icon](resources/icon.ico) Smart English Learner
+# Smart English Learner <img style="float: right;" src="resources/icon.ico">
 Smart English Learner is a tool designed to help non-native English speakers elevate their professional English.
 - Error correction
 - Simple and comprehensive explanations
@@ -10,13 +10,12 @@ Smart English Learner is a tool designed to help non-native English speakers ele
 ## Setup
 ### Installation
 1. [Install Python](https://www.python.org/downloads/) (tested on Python 3.9.7)
-2. Install the following libraries
+2. Install the requirements
 ```
-$ pip install PySimpleGUI
-$ pip install openai
+$ pip install -r requirements.txt
 ```
 ### Get an OpenAI API Key
-\* You will need to set up a paid account after your 30-day free trial expires. (See: Estimated Costs)
+\* You will need to set up a paid account after your 30-day free trial expires. [(See: Estimated Costs)](#estimated-costs)
 1. [Create an OpenAI account](https://platform.openai.com/)
 2. [Create an API key](https://platform.openai.com/account/api-keys)
 3. Store it somewhere safe

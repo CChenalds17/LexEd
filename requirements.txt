@@ -1,0 +1,2 @@
+PySimpleGUI==4.60.4
+openai==0.27.6
