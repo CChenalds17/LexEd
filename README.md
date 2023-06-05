@@ -1,9 +1,17 @@
-# Smart English Learner <img style="float: right;" src="resources/icon.ico">
-Smart English Learner is a tool designed to help non-native English speakers elevate their professional English.
+# LexEd <img style="float: right;" src="resources/icon.ico">
+LexEd is a tool designed to help non-native English speakers elevate their professional English.
 - Error correction
-- Simple and comprehensive explanations
+- Simple & comprehensive explanations
 - Practice & improve on the mistakes you made
 - Generates new sentences based on your grammatical errors
+
+## Why LexEd?
+- **More** than just a spell-checker
+- Helps users **practice** on common mistakes
+- Cutting-edge AI technology generates **personalized** practice problems
+- **Novel method** generates new sentences based on past grammatical errors
+- Two-stage practice mode **mimics editing process**
+- Designed for **improvement**, not reliance
 
 ![Demo](resources/demo.gif)
 
@@ -32,6 +40,11 @@ $ python display.py
 7. Elevate your English!
 
 ## Estimated Costs
+### Overall Costs (depending on usage)
+- $0.061 (6.1¢) per session
+- $0.50 (50¢) per week
+- $2.00 per month
+### Cost Breakdown
 Per session:
 - Grammar Check: $0.0015 (0.15¢)
 - Check + Explain: $0.0029 (0.29¢)
@@ -41,3 +54,4 @@ Per session:
 ## Planned Improvements
 - Add multilingual support
 - Make user profiles
+- Taylor algorithm to also check for flow
