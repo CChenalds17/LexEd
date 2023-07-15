@@ -15,7 +15,12 @@ LexEd is a tool designed to help non-native English speakers elevate their profe
 ## Setup
 ### Installation
 1. [Install Python](https://www.python.org/downloads/) (tested on Python 3.9.7)
-2. Install the requirements
+2. Clone the repository and navigate to the main directory
+```
+$ git clone https://github.com/CChenalds17/LexEd
+$ cd LexEd
+```
+3. Install the requirements
 ```
 $ pip install -r requirements.txt
 ```
