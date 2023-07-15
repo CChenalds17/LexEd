@@ -796,7 +796,6 @@ async def build_SmartTutor():
 
 # ~ Main function ~ #
 async def main():
-    # Instructions on how to get an OpenAI API Key (if startup file exists or smth like that) (or will this just be on GitHub README?)
     if await build_intro():
         await build_SmartTutor()
 
