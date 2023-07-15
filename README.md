@@ -15,14 +15,13 @@ LexEd is a tool designed to help non-native English speakers elevate their profe
 ## Setup
 ### Installation
 1. [Install Python](https://www.python.org/downloads/) (tested on Python 3.9.7)
-2. Clone the repository and navigate to the main directory
+2. Clone the repository
 ```
 $ git clone https://github.com/CChenalds17/LexEd
-$ cd LexEd
 ```
 3. Install the requirements
 ```
-$ pip install -r requirements.txt
+$ pip install -r LexEd/requirements.txt
 ```
 ### Get an OpenAI API Key
 \* You will need to set up a paid account after your 30-day free trial expires. [(See: Estimated Costs)](#estimated-costs)
