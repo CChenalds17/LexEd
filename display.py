@@ -5,6 +5,7 @@ import os
 import json
 import base64
 import asyncio
+from typing import Tuple, List
 
 with open('resources/icon.ico', 'rb') as file:
     icon = file.read()
@@ -113,7 +114,7 @@ async def build_intro(change_api_key=False) -> bool:
         return is_valid_key
 
 # ~ Function to build Practice window ~ #
-async def build_practice(errors_in: list[str], base_window: sg.Window) -> None:
+async def build_practice(errors_in: List[str], base_window: sg.Window) -> None:
     '''
     Builds the practice exercises window.\n
     Takes in errors_in[], base_window; returns nothing.\n
@@ -540,7 +541,7 @@ async def build_practice(errors_in: list[str], base_window: sg.Window) -> None:
     window.close()
 
 # ~ Function to update which grammatical error is displayed ~ #
-def update_error(errors: list[str], corrected: list[str], error_num: int) -> str:
+def update_error(errors: List[str], corrected: List[str], error_num: int) -> str:
     '''
     Function to update which grammatical error is displayed.\n
     Takes in errors[], corrected[], error_num; returns errors[error_num], corrected[error_num] (or 'No errors' message).
@@ -551,12 +552,12 @@ def update_error(errors: list[str], corrected: list[str], error_num: int) -> str
         # Sentence B: Grammatically correct
         sent_A = errors[error_num]
         sent_B = corrected[error_num]
-        return f'Original (A): {sent_A}\nCorrected (B): {sent_B}'   
+        return f'Original: {sent_A}\nCorrected: {sent_B}'   
     # If no errors exist     
     else:
         return 'No errors! Good job :)'
 
-def update_input_sample(text: list[str], err_num_to_highlight: int, window: sg.Window, multi_key: str) -> None:
+def update_input_sample(text: List[str], err_num_to_highlight: int, window: sg.Window, multi_key: str) -> None:
     window[multi_key].update('')
     for i in range(0, len(text)):
         # If correct chunk, append chunk normally
@@ -786,6 +787,7 @@ async def build_SmartTutor():
         # 'Practice' button: Start practice window (only clickable after checking)
         if event == 'Practice':
             await build_practice(errors, window)
+            window['-ERR_MSG-'].update('')
 
     window.close()
 

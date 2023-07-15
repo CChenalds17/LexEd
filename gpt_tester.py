@@ -1,6 +1,10 @@
 import openai
 import asyncio
 import PySimpleGUI as sg
+from typing import Tuple, List
+import nltk
+nltk.download('punkt')
+from nltk.tokenize import sent_tokenize
 
 async def loading_bar(window: sg.Window = None, key: str ='-ERR_MSG-'):
     if window == None:
@@ -16,14 +20,13 @@ async def loading_bar(window: sg.Window = None, key: str ='-ERR_MSG-'):
         window.Refresh()
         await asyncio.sleep(0.3)
 
-async def call_openai(model_name: str, init_prompt: str, prompt: str, temp=1, max_tok=200, window=None, key='-ERR_MSG-') -> tuple[str, str]:
+async def call_openai(model_name: str, init_prompt: str, prompt: str, temp=1, max_tok=200, window=None, key='-ERR_MSG-') -> Tuple[str, str]:
     '''
     Utility function to call ChatGPT/GPT4 while handling exceptions.\n
     Takes in model_name, init_prompt, prompt, temp, max_tok, window, key; returns (out_msg, err_instr).
     '''
     out_msg = ''
     err_instr = ''
-
     try:
         loading_task = asyncio.create_task(loading_bar(window=window, key=key))
         # If no init_prompt:
@@ -89,7 +92,7 @@ async def call_openai(model_name: str, init_prompt: str, prompt: str, temp=1, ma
 
     return (out_msg, err_instr)
 
-async def verify_key(api_key: str, window=None, key='-ERR_MSG-') -> tuple[bool, str]:
+async def verify_key(api_key: str, window=None, key='-ERR_MSG-') -> Tuple[bool, str]:
     '''
     Verifies OpenAI API Key. If exception is thrown, returns error info and user instructions.\n
     Takes in api_key, window, key; returns (is_valid_key, err_instr).
@@ -108,27 +111,32 @@ async def verify_key(api_key: str, window=None, key='-ERR_MSG-') -> tuple[bool, 
 
     return (is_valid_key, err_instr)
 
-async def is_correct(text: str, window=None, key='-ERR_MSG-') -> tuple[bool, str]:
+async def is_correct(text: str, window=None, key='-ERR_MSG-') -> Tuple[bool, str]:
     '''
     Checks if the text contains errors.\n
     Takes in text, window, key; returns (is_correct, err_instr).
     '''
     is_correct = None
 
-    is_correct_init_prompt = "You are a helpful AI assistant."
-    is_correct_prompt = f"Is the following grammatically correct? Just tell me yes or no, nothing else.\n\n\"{text}\""
-    (out_msg, err_instr) = await call_openai('gpt-3.5-turbo', is_correct_init_prompt, is_correct_prompt, window=window, key=key)
+    sentences = sent_tokenize(text)
+    for sentence in sentences:
+        is_correct_init_prompt = "You are a helpful AI assistant."
+        is_correct_prompt = f"Is the following grammatically correct? Just tell me yes or no, nothing else.\n\n\"{sentence}\""
+        (out_msg, err_instr) = await call_openai('gpt-3.5-turbo', is_correct_init_prompt, is_correct_prompt, window=window, key=key)
 
-    # If no exceptions:
-    if err_instr == '':
-        is_correct = out_msg.lower()[0] == 'y'
-    # If yes exceptions:
-    else:
-        is_correct = False
+        # If no exceptions:
+        if err_instr == '':
+            is_correct = out_msg.lower()[0] == 'y'
+            if not is_correct:
+                break
+        # If yes exceptions:
+        else:
+            is_correct = False
+            break
     
     return (is_correct, err_instr)
 
-async def correct(text: str, window=None, key='-ERR_MSG-') -> tuple[str, str]:
+async def correct(text: str, window=None, key='-ERR_MSG-') -> Tuple[str, str]:
     '''
     Corrects text.\n
     Takes in text, window, key; returns (corrected, err_instr).
@@ -141,7 +149,7 @@ async def correct(text: str, window=None, key='-ERR_MSG-') -> tuple[str, str]:
     corrected = out_msg.strip().strip('"')
     return (corrected, err_instr)
 
-async def explain_error(sent_A: str, sent_B: str, window=None, key='-ERR_MSG-') -> tuple[str, str]:
+async def explain_error(sent_A: str, sent_B: str, window=None, key='-ERR_MSG-') -> Tuple[str, str]:
     '''
     Explains the grammatical error between sent_A (incorrect) and sent_B (correct).\n
     Takes in sent_A, sent_B, window, key; returns (explanation, err_instr).
@@ -156,20 +164,26 @@ async def explain_error(sent_A: str, sent_B: str, window=None, key='-ERR_MSG-') 
     explanation = out_msg
     return (explanation, err_instr)
 
-async def gen_incorrect(sent_A: str, window=None, key='-ERR_MSG-') -> tuple[str, str]:
+async def gen_incorrect(sent_A: str, window=None, key='-ERR_MSG-') -> Tuple[str, str]:
     '''
     Generates a sentece with the same grammatical error as sent_A.\n
     Takes in sent_A, window, key; returns (sent_B, err_instr).
     '''
     sent_B = ''
 
-    gen_incorrect_prompt = f"Generate a sentence with the same grammatical error as sentence A\n\nA: Your child were at school today\nB: She were eating dinner\n\nA: The dogs were eat at the park\nB: The children were sit at the table\n\nA: We need to get our sale's numbers up\nB: There are many desk's in this room\n\nA: {sent_A}\nB:"
+    gram_error_code_init_prompt = "You are a helpful AI assistant."
+    gram_error_code_prompt = f"Give me a short, easy to remember description of the grammatical concept in the following sentence misuses. Just give me the concept. Nothing else.\n\n{sent_A}"
+    (gram_error_code, err_instr) = await call_openai('gpt-3.5-turbo', gram_error_code_init_prompt, gram_error_code_prompt, window=window, key=key)
+
+    gram_error_code = gram_error_code.strip().strip('"').strip('.')
+
+    gen_incorrect_prompt = f"Generate a sentence with the following error: {gram_error_code}, the same grammatical error as sentence A\n\nA: Your child were at school today\nB: She were eating dinner\n\nA: The dogs were eat at the park\nB: The children were sit at the table\n\nA: We need to get our sale's numbers up\nB: There are many desk's in this room\n\nA: {sent_A}\nB:"
     (out_msg, err_instr) = await call_openai('gpt-4', '', gen_incorrect_prompt, window=window, key=key)
 
-    sent_B = out_msg
+    sent_B = out_msg.strip().strip('"')
     return (sent_B, err_instr)
 
-async def gen_correct(sent_A: str, window=None, key='-ERR_MSG-') -> tuple[str, str]:
+async def gen_correct(sent_A: str, window=None, key='-ERR_MSG-') -> Tuple[str, str]:
     '''
     Generates a grammatically corrrect sentence with the same grammar concept that sent_A got wrong.\n
     Takes in sent_A, window, key; returns (sent_B, err_instr).
@@ -180,10 +194,10 @@ async def gen_correct(sent_A: str, window=None, key='-ERR_MSG-') -> tuple[str, s
     gen_correct_prompt = f"Generate a grammatically correct sentence using the grammar concept that the following sentence uses incorrectly, but change the subject. Just give me the sentence, nothing else.\n\n\"{sent_A}\""
     (out_msg, err_instr) = await call_openai('gpt-4', gen_correct_init_prompt, gen_correct_prompt, window=window, key=key)
 
-    sent_B = out_msg
+    sent_B = out_msg.strip().strip('"')
     return (sent_B, err_instr)
 
-async def check(text: str, window=None, key='-ERR_MSG-') -> tuple[list[str], list[str], str]:
+async def check(text: str, window=None, key='-ERR_MSG-') -> Tuple[List[str], List[str], str]:
     '''
     Checks text for grammatical errors.\n
     Takes in text, window, key; returns (errors[], corrected[], err_instr).
@@ -192,35 +206,21 @@ async def check(text: str, window=None, key='-ERR_MSG-') -> tuple[list[str], lis
     corrected = []
     err_instr = ''
 
-    # Check if the text even contains grammatical errors
-    (no_errors, err_instr) = await is_correct(text, window=window, key=key)
-    # If there's an exception, just return empty lists & err_instr
-    if err_instr != '':
-        return (errors, corrected, err_instr)
-    # If there are no grammatical errors, return empty lists & empty err_instr
-    if no_errors:
-        return (errors, corrected, err_instr)
-    
-    check_init_prompt = "You are a helpful AI assistant."
-    check_prompt_1 = f"List the grammatically incorrect sentence, or sentences, each separated by the '|' character. Nothing else. If there is only one, just return the sentence.\n\n\"{text}\""
-    # If there are grammatical errors, call ChatGPT to find them
-    (out_msg_1, err_instr) = await call_openai('gpt-3.5-turbo', check_init_prompt, check_prompt_1, window=window, key=key)
-    if err_instr != '':
-        return (errors, corrected, err_instr)
-    check_prompt_2 = f"Correct each sentence, separating each with the '|' character. If there is only one, just return the corrected sentence.\n\n\"{out_msg_1}\""
-    (out_msg2, err_instr) = await call_openai('gpt-3.5-turbo', check_init_prompt, check_prompt_2, window=window, key=key)
-    if err_instr != '':
-        return (errors, corrected, err_instr)
-    
-    e = out_msg_1.strip().strip('"').split('|')
-    c = out_msg2.strip().strip('"').split('|')
-
-    for i in range(0, len(e)):
-        errors.append(e[i].strip())
-        corrected.append(c[i].strip())
-    for i in range(0, len(errors)):
-        if errors[i] == corrected[i]:
-            del errors[i]
-            del corrected[i]
+    sentences = sent_tokenize(text)
+    for sentence in sentences:
+        # Check if the text even contains grammatical errors
+        (no_errors, err_instr) = await is_correct(sentence, window=window, key=key)
+        if err_instr != '':
+            return (errors, corrected, err_instr)
+        # If there is an error, append it to errors[]; if no errors, don't bother to correct
+        if not no_errors:
+            errors.append(sentence)
+        else:
+            continue
+        # If there are grammatical errors, call ChatGPT to correct them
+        (corrected_sent, err_instr) = await correct(sentence, window=window, key=key)
+        if err_instr != '':
+            return (errors, corrected, err_instr)
+        corrected.append(corrected_sent)
 
     return (errors, corrected, err_instr)

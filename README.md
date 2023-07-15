@@ -9,7 +9,8 @@ LexEd is a tool designed to help non-native English speakers elevate their profe
 - Two-stage practice mode **mimics editing process**
 - Designed for **improvement**, not reliance
 
-![Demo](resources/demo.gif)
+![Error Correction + Explanation Demo](resources/demo_1.gif)
+![Practice Mode Demo](resources/demo_2.gif)
 
 ## Setup
 ### Installation
